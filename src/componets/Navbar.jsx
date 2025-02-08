@@ -1,192 +1,85 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../componets/supabaseClient.jsx";
+import { supabase } from "./supabaseClient";
+
+const baseURL = import.meta.env.BASE_URL || '/scholarship-job-board-myscholy-/';
 
 function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userFullName, setUserFullName] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // Add state to track authentication status
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) throw error;
-
-        if (session?.user) {
-          setIsAuthenticated(true);
-          setIsLoggedIn(true);
-          await fetchUserFullName(session.user.id);
-        } else {
-          setIsAuthenticated(false);
-          setIsLoggedIn(false);
-          setUserFullName("");
-        }
-      } catch (error) {
-        console.error("Auth check error:", error);
-        setIsAuthenticated(false);
-        setIsLoggedIn(false);
-        setUserFullName("");
-      }
+    // Check if user is logged in
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
     };
 
-    checkAuth();
+    checkUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      try {
-        if (event === 'SIGNED_IN' && session?.user) {
-          setIsAuthenticated(true);
-          setIsLoggedIn(true);
-          await fetchUserFullName(session.user.id);
-        } else if (event === 'SIGNED_OUT') {
-          setIsAuthenticated(false);
-          setIsLoggedIn(false);
-          setUserFullName("");
-        }
-      } catch (error) {
-        console.error("Auth state change error:", error);
-        setIsAuthenticated(false);
-        setIsLoggedIn(false);
-        setUserFullName("");
-      }
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
     });
 
-    return () => {
-      subscription?.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
-  const fetchUserFullName = async (userId) => {
-    try {
-      // First check if we have a valid userId
-      if (!userId) {
-        console.warn("No user ID provided");
-        setUserFullName("");
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("student-profile")
-        .select("full_name")
-        .eq("id", userId)
-        .single(); // Use single() instead of maybeSingle() since we expect one row
-
-      if (error) {
-        if (error.code === 'PGRST116') {
-          // No rows returned
-          console.warn("No profile found for user");
-          setUserFullName("");
-        } else {
-          console.error("Error fetching full name:", error);
-          setUserFullName("");
-        }
-      } else if (data) {
-        setUserFullName(data.full_name);
-      }
-    } catch (error) {
-      console.error("Error in fetchUserFullName:", error);
-      setUserFullName("");
-    }
-  };
-
   const handleLogout = async () => {
-    if (!isAuthenticated) return;
-
     try {
-      setIsLoading(true);
-
-      // Sign out from Supabase
       const { error } = await supabase.auth.signOut();
+      if (error) throw error;
       
-      if (error) {
-        throw error;
-      }
-
-      // Clear local state and storage
-      localStorage.clear();
-      setIsAuthenticated(false);
-      setIsLoggedIn(false);
-      setUserFullName("");
-
-      // Redirect to login page
-      navigate("/login");
-
+      setUser(null);
+      navigate('/', { replace: true });
     } catch (error) {
-      console.error("Logout failed:", error);
-      // Reset states even if there's an error
-      setIsAuthenticated(false);
-      setIsLoggedIn(false);
-      setUserFullName("");
-    } finally {
-      setIsLoading(false);
+      console.error('Error logging out:', error.message);
     }
-  };
-
-  // Update the render logic to handle loading state better
-  const renderAuthButton = () => {
-    if (isLoading) {
-      return (
-        <button
-          disabled
-          className="bg-gray-500 text-white px-4 py-2 rounded-lg opacity-50 cursor-not-allowed"
-        >
-          Logging out...
-        </button>
-      );
-    }
-
-    if (isAuthenticated && isLoggedIn) {
-      return (
-        <>
-          <span className="text-white">Welcome, {userFullName}</span>
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-          >
-            Logout
-          </button>
-        </>
-      );
-    }
-
-    return (
-      <Link
-        to="/login"
-        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-      >
-        Login
-      </Link>
-    );
   };
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   return (
-    <div className="bg-gradient-to-b from-blue-900 to-red-800 text-white">
+    <div className="bg-gradient-to-b from-blue-900 to-yellow-600 text-white">
       <nav className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg py-4">
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <Link to="/">
-            <div className="text-2xl font-bold text-white">MyScholy</div>
-          </Link>
+          <div className="flex items-center">
+            <Link to="/" className="mr-12">
+              <div className="text-2xl font-bold text-white">MyScholy</div>
+            </Link>
+            <div className="hidden md:flex space-x-6">
+              <Link to="/" className="text-white hover:text-blue-300">
+                Home
+              </Link>
+              <Link to="/scholarship-list" className="text-white hover:text-blue-300">
+                Scholarships
+              </Link>
+            </div>
+          </div>
 
-          <div className="hidden md:flex space-x-6 items-center">
-            <Link to="/" className="text-white hover:text-blue-300">
-              Home
-            </Link>
-            <Link to="/scholarship-list" className="text-white hover:text-blue-300">
-              Scholarships
-            </Link>
+          {/* Auth Buttons and Contact */}
+          <div className="hidden md:flex items-center space-x-6">
             <Link to="/contact" className="text-white hover:text-blue-300">
               Contact
             </Link>
-
-            {renderAuthButton()}
+            {user ? (
+              <button
+                onClick={handleLogout}
+                className="text-white hover:text-blue-300"
+              >
+                Logout
+              </button>
+            ) : (
+              <>
+                <Link to="/login" className="text-white hover:text-blue-300">
+                  Login
+                </Link>
+                <Link to="/signup" className="text-white hover:text-blue-300">
+                  Sign up
+                </Link>
+              </>
+            )}
           </div>
 
           <button
@@ -210,6 +103,7 @@ function Navbar() {
           </button>
         </div>
 
+        {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4">
             <Link to="/" className="block py-2 px-4 text-white hover:bg-blue-600">
@@ -221,14 +115,33 @@ function Navbar() {
             >
               Scholarships
             </Link>
-            <Link
-              to="/contact"
-              className="block py-2 px-4 text-white hover:bg-blue-600"
-            >
+            <div className="border-t border-blue-800 my-2"></div>
+            <Link to="/contact" className="block py-2 px-4 text-white hover:bg-blue-600">
               Contact
             </Link>
-
-            {renderAuthButton()}
+            {user ? (
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left py-2 px-4 text-white hover:bg-blue-600"
+              >
+                Logout
+              </button>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="block py-2 px-4 text-white hover:bg-blue-600"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  className="block py-2 px-4 text-white hover:bg-blue-600"
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
           </div>
         )}
       </nav>

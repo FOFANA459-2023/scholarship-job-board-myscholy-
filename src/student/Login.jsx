@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../componets/supabaseClient.jsx";
-import { FaGoogle, FaFacebook, FaApple } from "react-icons/fa"; // React Icons for social login
 
 const Login = () => {
   const navigate = useNavigate();
@@ -41,6 +40,7 @@ const Login = () => {
     if (validateForm()) {
       try {
         setIsLoading(true);
+        setErrors({});
 
         // Attempt to sign in with Supabase
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -50,89 +50,43 @@ const Login = () => {
 
         if (error) throw error;
 
-        // Fetch the user's profile from student-profile table
-        const { data: profileData, error: profileError } = await supabase
-          .from("student-profile")
+        // Fetch user profile from student-user table
+        const { data: userData, error: userError } = await supabase
+          .from("student-user")
           .select("*")
           .eq("id", data.user.id)
           .single();
 
-        if (profileError) throw profileError;
+        if (userError) throw userError;
 
-        if (!profileData) {
-          throw new Error("Profile not found. Please contact support.");
-        }
-
-        // Store user data in localStorage or state management system
+        // Store user data in localStorage
         localStorage.setItem(
           "user",
           JSON.stringify({
             ...data.user,
-            profile: profileData,
+            profile: userData,
           })
         );
 
-        // Success message and redirect
-        setSuccessMessage("Login successful! Redirecting to dashboard...");
+        setSuccessMessage("Login successful! Redirecting...");
+        
+        // Navigate to dashboard
         setTimeout(() => {
-          navigate("/dashboard"); // Redirect to dashboard or home page
-        }, 3000); // Redirect after 3 seconds
+          navigate("/dashboard");
+        }, 1500);
+
       } catch (error) {
-        console.error("Error during login:", error.message);
+        console.error("Login error:", error);
         setErrors((prev) => ({
           ...prev,
           submit:
             error.message === "Invalid login credentials"
               ? "Invalid email or password"
-              : error.message,
+              : `Error: ${error.message}`,
         }));
       } finally {
         setIsLoading(false);
       }
-    }
-  };
-
-  const handleSocialLogin = async (provider) => {
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: provider,
-      });
-
-      if (error) throw error;
-
-      // Fetch the user's profile after social login
-      const { data: profileData, error: profileError } = await supabase
-        .from("student-profile")
-        .select("*")
-        .eq("id", data.user.id)
-        .single();
-
-      if (profileError) throw profileError;
-
-      if (!profileData) {
-        throw new Error("Profile not found. Please contact support.");
-      }
-
-      // Store user data in localStorage or state management system
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          ...data.user,
-          profile: profileData,
-        })
-      );
-
-      // Redirect after successful social login
-      setSuccessMessage("Login successful! Redirecting to dashboard...");
-      setTimeout(() => {
-        navigate("/dashboard"); // Redirect to dashboard or home page
-      }, 3000); // Redirect after 3 seconds
-    } catch (error) {
-      console.error("Error during social login:", error.message);
-      setErrors((prev) => ({
-        ...prev,
-        submit: "An error occurred during social login. Please try again.",
-      }));
     }
   };
 
@@ -154,10 +108,7 @@ const Login = () => {
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address
               </label>
               <div className="mt-1">
@@ -178,10 +129,7 @@ const Login = () => {
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
               <div className="mt-1">
@@ -209,23 +157,23 @@ const Login = () => {
                   type="checkbox"
                   className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                 />
-                <label
-                  htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-900"
-                >
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                   Remember me
                 </label>
               </div>
 
               <div className="text-sm">
-                <Link
-                  to="/forgot-password"
-                  className="font-medium text-indigo-600 hover:text-indigo-500"
-                >
+                <Link to="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
                   Forgot your password?
                 </Link>
               </div>
             </div>
+
+            {errors.submit && (
+              <div className="text-red-600 text-sm text-center">
+                {errors.submit}
+              </div>
+            )}
 
             <div>
               <button
@@ -236,58 +184,7 @@ const Login = () => {
                 {isLoading ? "Signing in..." : "Sign in"}
               </button>
             </div>
-
-            {errors.submit && (
-              <div className="text-red-600 text-sm text-center">
-                {errors.submit}
-              </div>
-            )}
           </form>
-
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-6 grid grid-cols-3 gap-3">
-              <div>
-                <button
-                  onClick={() => handleSocialLogin("google")}
-                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-red-600 hover:bg-red-50"
-                >
-                  <span className="sr-only">Sign in with Google</span>
-                  <FaGoogle className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div>
-                <button
-                  onClick={() => handleSocialLogin("facebook")}
-                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-blue-600 hover:bg-blue-50"
-                >
-                  <span className="sr-only">Sign in with Facebook</span>
-                  <FaFacebook className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div>
-                <button
-                  onClick={() => handleSocialLogin("apple")}
-                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-900 hover:bg-gray-50"
-                >
-                  <span className="sr-only">Sign in with Apple</span>
-                  <FaApple className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
-          </div>
 
           <div className="mt-6">
             <div className="relative">

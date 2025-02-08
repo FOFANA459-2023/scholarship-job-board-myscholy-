@@ -39,7 +39,7 @@ const FAQ = () => {
   };
 
   return (
-    <div className="bg-gray-50 py-16"> {/* Background color matching the landing page */}
+    <div className="bg-white py-16">
       <div className="max-w-3xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
           Frequently Asked Questions
@@ -48,21 +48,17 @@ const FAQ = () => {
           {faqData.map((faq, index) => (
             <div
               key={index}
-              className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
+              className="bg-sky-900 text-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+              onClick={() => toggleFAQ(index)}
             >
-              <div
-                className="flex justify-between items-center cursor-pointer"
-                onClick={() => toggleFAQ(index)}
-              >
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {faq.question}
-                </h3>
-                <span className="text-xl text-gray-600">
-                  {activeIndex === index ? "-" : "+"}
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold">{faq.question}</h3>
+                <span className="text-2xl font-bold">
+                  {activeIndex === index ? "−" : "+"}
                 </span>
               </div>
               {activeIndex === index && (
-                <p className="mt-4 text-gray-600">{faq.answer}</p>
+                <p className="mt-4 text-gray-200">{faq.answer}</p>
               )}
             </div>
           ))}

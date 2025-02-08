@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom"; // Remove BrowserRouter import
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./componets/Navbar.jsx";
 import Footer from "./componets/Footer.jsx";
 import ScholarshipList from "./pages/ScholarshipList.jsx";
@@ -10,32 +10,41 @@ import UpdateScholarship from "./Admin/UpdateScholarship.jsx";
 import LandingPage from "./componets/LandingPage.jsx";
 import AdminLogin from "./Admin/AdminLogin.jsx";
 import Contact from "./pages/Contact.jsx";
-import SubscribeForm from "./pages/SubscribeForm.jsx";
+
 import Signup from "./student/Signup.jsx";
 import Login from "./student/Login.jsx";
 
+import { AuthProvider } from './componets/AuthContext.jsx';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+
 function App() {
   return (
-    <div>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/admin-login" element={<AdminLogin />} />
-        <Route path="/scholarship-list" element={<ScholarshipList />} />
-        <Route path="/scholarship-detail/:id" element={<ScholarshipDetail />} />
-        <Route path="/post-scholarship" element={<PostScholarship />} />
-        <Route
-          path="/admin-scholarship-view:id"
-          element={<AdminScholarshipList />}
-        />
-        <Route path="/update-scholarship/:id" element={<UpdateScholarship />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/subscribe" element={<SubscribeForm />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
-      <Footer />
-    </div>
+      
+        <div>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/scholarship-list" element={<ScholarshipList />} />
+            <Route path="/scholarship-detail/:id" element={<ScholarshipDetail />} />
+            <Route path="/post-scholarship" element={<PostScholarship />} />
+            <Route
+              path="/admin-scholarship-view:id"
+              element={<AdminScholarshipList />}
+            />
+            <Route path="/update-scholarship/:id" element={<UpdateScholarship />} />
+            <Route path="/contact" element={<Contact />} />
+          
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            
+    
+          </Routes>
+          <Footer />
+        </div>
+ 
+   
   );
 }
 

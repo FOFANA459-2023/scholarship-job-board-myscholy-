@@ -2,18 +2,21 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "./supabaseClient";
 
-const baseURL = import.meta.env.BASE_URL || '/scholarship-job-board-myscholy-/';
+const baseURL = import.meta.env.BASE_URL || "/scholarship-job-board-myscholy-/";
 
 function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // Track loading state
   const navigate = useNavigate();
 
   useEffect(() => {
     // Check if user is logged in
     const checkUser = async () => {
+      setIsLoading(true); // Start loading
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
+      setIsLoading(false); // Stop loading
     };
 
     checkUser();
@@ -21,6 +24,7 @@ function Navbar() {
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
+      setIsLoading(false); // Stop loading after auth state change
     });
 
     return () => subscription.unsubscribe();
@@ -30,11 +34,11 @@ function Navbar() {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      
+
       setUser(null);
-      navigate('/', { replace: true });
+      navigate("/", { replace: true });
     } catch (error) {
-      console.error('Error logging out:', error.message);
+      console.error("Error logging out:", error.message);
     }
   };
 
@@ -63,7 +67,11 @@ function Navbar() {
             <Link to="/contact" className="text-white hover:text-blue-300">
               Contact
             </Link>
-            {user ? (
+            {isLoading ? (
+              // Show loading state while checking auth
+              <div className="text-white">Loading...</div>
+            ) : user ? (
+              // Show Logout if user is authenticated
               <button
                 onClick={handleLogout}
                 className="text-white hover:text-blue-300"
@@ -71,12 +79,16 @@ function Navbar() {
                 Logout
               </button>
             ) : (
+              // Show Login/Signup if user is not authenticated
               <>
                 <Link to="/login" className="text-white hover:text-blue-300">
                   Login
                 </Link>
                 <Link to="/signup" className="text-white hover:text-blue-300">
                   Sign up
+                </Link>
+                <Link to="/admin-login" className="text-white hover:text-blue-300">
+                  Admin
                 </Link>
               </>
             )}
@@ -119,7 +131,11 @@ function Navbar() {
             <Link to="/contact" className="block py-2 px-4 text-white hover:bg-blue-600">
               Contact
             </Link>
-            {user ? (
+            {isLoading ? (
+              // Show loading state while checking auth
+              <div className="block py-2 px-4 text-white">Loading...</div>
+            ) : user ? (
+              // Show Logout if user is authenticated
               <button
                 onClick={handleLogout}
                 className="block w-full text-left py-2 px-4 text-white hover:bg-blue-600"
@@ -127,6 +143,7 @@ function Navbar() {
                 Logout
               </button>
             ) : (
+              // Show Login/Signup if user is not authenticated
               <>
                 <Link
                   to="/login"
@@ -139,6 +156,12 @@ function Navbar() {
                   className="block py-2 px-4 text-white hover:bg-blue-600"
                 >
                   Sign up
+                </Link>
+                <Link
+                  to="/admin-login"
+                  className="block py-2 px-4 text-white hover:bg-blue-600"
+                >
+                  Admin
                 </Link>
               </>
             )}

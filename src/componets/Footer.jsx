@@ -9,9 +9,8 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="bg-sky-900 text-white py-12">
+    <footer className="bg-gradient-to-b from-blue-900 to-yellow-600 text-white py-12">
       <div className="container mx-auto px-6">
-        {/* Footer Content (Below Subscription Form) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Quick Links */}
           <div>

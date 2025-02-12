@@ -1,26 +1,35 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../componets/supabaseClient.jsx';
+import { supabase } from '../componets/supabaseClient';
 import { useParams } from 'react-router-dom';
 
 const ScholarshipDetail = React.memo(() => {
-  const { id } = useParams(); // Get the scholarship ID from the URL
+  const { id } = useParams();
   const [scholarship, setScholarship] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch scholarship details from Supabase
+  // Helper function for date formatting
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  // Fetch scholarship details
   const fetchScholarship = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('scholarships')
         .select('*')
         .eq('id', id)
-        .single(); // Fetch a single record
+        .single();
 
       if (error) throw error;
       setScholarship(data);
     } catch (error) {
-      setError(error.message);
+      setError('There was an issue fetching the scholarship details.');
     } finally {
       setLoading(false);
     }
@@ -30,19 +39,19 @@ const ScholarshipDetail = React.memo(() => {
     fetchScholarship();
   }, [fetchScholarship]);
 
-  // Helper function to format eligibility and benefits with bullet points
+  // Format eligibility and benefits
   const formatBulletPoints = useCallback((text) => {
     return text
-      .split('\n') // Split by newline
-      .map((line) => line.trim()) // Trim each line
-      .filter((line) => line.length > 0) // Remove empty lines
-      .map((line, index) => <li key={index}>{line}</li>); // Convert to list items
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0)
+      .map((line, index) => <li key={index}>{line}</li>);
   }, []);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-100">
-        <p className="text-lg text-black">Loading scholarship details...</p>
+        <div className="spinner"></div> {/* Add spinner CSS */}
       </div>
     );
   }
@@ -50,7 +59,7 @@ const ScholarshipDetail = React.memo(() => {
   if (error) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-100">
-        <p className="text-lg text-red-500">Error: {error}</p>
+        <p className="text-lg text-red-500">{error}</p>
       </div>
     );
   }
@@ -66,7 +75,6 @@ const ScholarshipDetail = React.memo(() => {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-4xl mx-auto">
-        {/* First Section: Standout Details */}
         <div className="bg-white shadow-xl rounded-lg p-6 mb-8 transform transition-all hover:scale-105">
           <h2 className="text-3xl font-bold text-black mb-4">{scholarship.name}</h2>
           <div className="space-y-2 text-black">
@@ -75,19 +83,11 @@ const ScholarshipDetail = React.memo(() => {
             </p>
             <p className="text-sm">
               <span className="font-semibold">Date Posted:</span>{' '}
-              {new Date(scholarship.created_at).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
+              {formatDate(scholarship.created_at)}
             </p>
             <p className="text-sm">
               <span className="font-semibold">Deadline:</span>{' '}
-              {new Date(scholarship.deadline).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
+              {formatDate(scholarship.deadline)}
             </p>
             <p className="text-sm">
               <span className="font-semibold">Host Country:</span> {scholarship.host_country}
@@ -98,7 +98,6 @@ const ScholarshipDetail = React.memo(() => {
           </div>
         </div>
 
-        {/* Second Section: Description, Eligibility, Benefits, and Link */}
         <div className="bg-white shadow-lg rounded-lg p-6">
           <h3 className="text-xl font-bold text-black mb-4">Details</h3>
           <div className="space-y-4 text-black">

@@ -9,34 +9,23 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check active sessions and sets the user
+    // Check active sessions and set the user
     const checkUser = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         
         if (user) {
-          // Check if user is admin
-          const { data: adminData } = await supabase
-            .from('admin-user')
-            .select('*')
+          // Fetch user role directly from the users table
+          const { data: userData } = await supabase
+            .from('users')
+            .select('role')
             .eq('id', user.id)
             .single();
 
-          if (adminData) {
-            setUserRole('admin');
-          } else {
-            // Check if user is student
-            const { data: studentData } = await supabase
-              .from('student-user')
-              .select('*')
-              .eq('id', user.id)
-              .single();
-
-            if (studentData) {
-              setUserRole('student');
-            }
+          if (userData) {
+            setUserRole(userData.role); // Set role based on users table
           }
-          
+
           setUser(user);
         }
         
@@ -53,25 +42,18 @@ export const AuthProvider = ({ children }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         setUser(session.user);
+
         // Recheck role when auth state changes
-        const { data: adminData } = await supabase
-          .from('admin-user')
-          .select('*')
+        const { data: userData, error } = await supabase
+          .from('users')
+          .select('role')
           .eq('id', session.user.id)
           .single();
 
-        if (adminData) {
-          setUserRole('admin');
-        } else {
-          const { data: studentData } = await supabase
-            .from('student-user')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-
-          if (studentData) {
-            setUserRole('student');
-          }
+        if (error) {
+          console.error("Error fetching user data on auth state change:", error);
+        } else if (userData) {
+          setUserRole(userData.role); // Set role based on users table
         }
       } else {
         setUser(null);

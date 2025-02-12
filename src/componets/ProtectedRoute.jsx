@@ -1,22 +1,23 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../componets/AuthContext';
+import React from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
-export const StudentRoute = ({ children }) => {
+export const StudentRoute = () => {
   const { user, userRole } = useAuth();
-  
+
   if (!user || userRole !== 'student') {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" />;
   }
-  
-  return children;
+
+  return <Outlet />;
 };
 
-export const AdminRoute = ({ children }) => {
+export const AdminRoute = () => {
   const { user, userRole } = useAuth();
-  
+
   if (!user || userRole !== 'admin') {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/admin-login" />;
   }
-  
-  return children;
-}; 
+
+  return <Outlet />;
+};

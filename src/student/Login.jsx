@@ -41,25 +41,36 @@ const Login = () => {
       try {
         setIsLoading(true);
         setErrors({});
-
-        // Attempt to sign in with Supabase
+  
+        console.log("Signing in with:", formData.email); // Debugging
+  
+        // 1. Sign in with Supabase Auth
         const { data, error } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password,
         });
-
+  
+        console.log("Sign-in response:", data, error); // Debugging
+  
         if (error) throw error;
-
-        // Fetch user profile from student-user table
+  
+        // 2. Fetch user profile from the users table
         const { data: userData, error: userError } = await supabase
-          .from("student-user")
+          .from("users")
           .select("*")
           .eq("id", data.user.id)
           .single();
-
+  
+        console.log("User profile response:", userData, userError); // Debugging
+  
         if (userError) throw userError;
-
-        // Store user data in localStorage
+  
+        // 3. Check if userData exists
+        if (!userData) {
+          throw new Error("User not found. Please sign up.");
+        }
+  
+        // 4. Store user data in localStorage
         localStorage.setItem(
           "user",
           JSON.stringify({
@@ -67,14 +78,24 @@ const Login = () => {
             profile: userData,
           })
         );
-
+  
         setSuccessMessage("Login successful! Redirecting...");
-        
-        // Navigate to dashboard
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1500);
-
+  
+        // 5. Redirect based on role
+        if (userData.role === "admin") {
+          // Redirect to admin page with the user's ID
+          setTimeout(() => {
+            navigate(`/admin-scholarship-view/${data.user.id}`);
+          }, 1500);
+        } else if (userData.role === "student") {
+          // Redirect to home page for students
+          setTimeout(() => {
+            navigate("/");
+          }, 1500);
+        } else {
+          throw new Error("Unknown user role");
+        }
+  
       } catch (error) {
         console.error("Login error:", error);
         setErrors((prev) => ({
@@ -82,6 +103,8 @@ const Login = () => {
           submit:
             error.message === "Invalid login credentials"
               ? "Invalid email or password"
+              : error.message === "User not found in the database. Please sign up."
+              ? "User not found. Please sign up."
               : `Error: ${error.message}`,
         }));
       } finally {

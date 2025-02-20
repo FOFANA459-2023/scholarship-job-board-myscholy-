@@ -1,4 +1,6 @@
 <script>
-    window.location.replace('/scholarship-job-board-myscholy-' + window.location.pathname);
-  </script>
+    const basename = '/scholarship-job-board-myscholy-';
+    const newPath = basename + window.location.pathname.replace(basename, '');
+    window.location.replace(newPath);
+</script>
   

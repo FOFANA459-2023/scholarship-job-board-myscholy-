@@ -85,7 +85,7 @@ function Navbar() {
                   Login
                 </Link>
                 <Link to="/signup" className="text-white hover:text-blue-300">
-                  Sign up
+                  Signup
                 </Link>
                 <Link to="/admin-login" className="text-white hover:text-blue-300">
                   Admin
@@ -155,7 +155,7 @@ function Navbar() {
                   to="/signup"
                   className="block py-2 px-4 text-white hover:bg-blue-600"
                 >
-                  Sign up
+                  Signup
                 </Link>
                 <Link
                   to="/admin-login"

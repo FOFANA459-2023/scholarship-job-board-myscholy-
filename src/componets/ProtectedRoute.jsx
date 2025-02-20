@@ -1,23 +1,48 @@
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+import { useEffect, useState } from "react";
+import { useNavigate, Outlet } from "react-router-dom";
+import { supabase } from "./supabaseClient";
 
-export const StudentRoute = () => {
-  const { user, userRole } = useAuth();
+const ProtectedRoute = ({ requiredRole }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  if (!user || userRole !== 'student') {
-    return <Navigate to="/login" />;
+  useEffect(() => {
+    const checkAuth = async () => {
+      setLoading(true);
+
+      // Check if the user is authenticated
+      const { data: { user }, error } = await supabase.auth.getUser();
+
+      if (!user) {
+        navigate("/login"); // Redirect to login if not authenticated
+        return;
+      }
+
+      // Fetch the user's role from the `users` table
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("role")
+        .eq("id", user.id) // Use `id` instead of `user_id` based on your schema
+        .single();
+
+      if (userError || !userData || !requiredRole.includes(userData.role)) {
+        navigate("/access-denied"); // Redirect if the user doesn't have the required role
+        return;
+      }
+
+      setUser(user);
+      setLoading(false);
+    };
+
+    checkAuth();
+  }, [navigate, requiredRole]);
+
+  if (loading) {
+    return <div>Loading...</div>; // Show a loading spinner or message
   }
 
-  return <Outlet />;
+  return <Outlet />; // Render the child routes if authenticated and authorized
 };
 
-export const AdminRoute = () => {
-  const { user, userRole } = useAuth();
-
-  if (!user || userRole !== 'admin') {
-    return <Navigate to="/admin-login" />;
-  }
-
-  return <Outlet />;
-};
+export default ProtectedRoute;

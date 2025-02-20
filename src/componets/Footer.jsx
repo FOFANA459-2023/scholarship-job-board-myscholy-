@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   FaFacebook,
   FaInstagram,
@@ -17,52 +18,44 @@ const Footer = () => {
             <h3 className="text-xl font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <a
-                  href="/scholarships"
+                <Link
+                  to="/scholarships"
                   className="hover:text-yellow-500 transition-colors duration-300"
                 >
                   Scholarships
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/exam-prep"
+                <Link
+                  to="/exam-prep"
                   className="hover:text-yellow-500 transition-colors duration-300"
                 >
                   Exam Prep
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/mentor-network"
+                <Link
+                  to="/mentor-network"
                   className="hover:text-yellow-500 transition-colors duration-300"
                 >
-                  Mentor Network
-                </a>
+                  Join Our WhatsApp Community
+                </Link>
               </li>
               <li>
-                <a
-                  href="/job-board"
-                  className="hover:text-yellow-500 transition-colors duration-300"
-                >
-                  Job Board
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/privacy-policy"
+                <Link
+                  to="/privacy-policy"
                   className="hover:text-yellow-500 transition-colors duration-300"
                 >
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/terms-of-service"
+                <Link
+                  to="/terms-of-service"
                   className="hover:text-yellow-500 transition-colors duration-300"
                 >
                   Terms of Service
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -74,68 +67,28 @@ const Footer = () => {
             </h3>
             <ul className="space-y-2">
               <li>
-                <a
-                  href="/exam-prep"
+                <Link
+                  to="/exam-prep"
                   className="hover:text-yellow-500 transition-colors duration-300"
                 >
                   Exam Prep (SAT, ACT, GRE, TOEFL, IELTS)
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/scholarship-support"
+                <Link
+                  to="/scholarship-support"
                   className="hover:text-yellow-500 transition-colors duration-300"
                 >
-                  Scholarship Support
-                </a>
+                  Essay Proofreading & Editing
+                </Link>
               </li>
               <li>
-                <a
-                  href="/application-assistance"
+                <Link
+                  to="/application-assistance"
                   className="hover:text-yellow-500 transition-colors duration-300"
                 >
                   Application Assistance
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/university-matching"
-                  className="hover:text-yellow-500 transition-colors duration-300"
-                >
-                  University Matching
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/credential-verification"
-                  className="hover:text-yellow-500 transition-colors duration-300"
-                >
-                  Credential Verification
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/college-recruiting"
-                  className="hover:text-yellow-500 transition-colors duration-300"
-                >
-                  College Recruiting
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/mentor-network"
-                  className="hover:text-yellow-500 transition-colors duration-300"
-                >
-                  Mentor Network
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/job-board"
-                  className="hover:text-yellow-500 transition-colors duration-300"
-                >
-                  Job Board
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

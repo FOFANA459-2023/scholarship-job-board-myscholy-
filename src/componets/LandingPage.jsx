@@ -24,7 +24,7 @@ const LandingPage = () => {
       >
         <div className="container mx-auto px-4 sm:px-6 text-center bg-black bg-opacity-50 p-8 rounded-lg">
           <h1 className="text-4xl sm:text-5xl font-bold mb-6">
-            Empowering Students Worldwide Through Education
+          Empowering students through scholarships 
           </h1>
           <p className="text-lg sm:text-xl mb-8">
             Discover scholarships, grants, and opportunities to achieve your
@@ -35,33 +35,36 @@ const LandingPage = () => {
       </header>
 
       {/* About Section */}
-      <section id="about" className="bg-white text-sky-900 py-12 md:py-16">
-        <div className="container mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-8">About MyScholy</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="text-base sm:text-lg text-left">
-              <p className="mb-6">
-                MyScholy is dedicated to providing students around the world with
-                access to quality education through scholarships, grants, and
-                mentorship programs.
-              </p>
-              <p className="mb-6">
-                Our mission is to empower the next generation of global leaders,
-                innovators, and change-makers by connecting them with the
-                resources they need to succeed.
-              </p>
-              <CTAButton text="Learn More" to="/about" />
-            </div>
-            <div className="flex justify-center">
-              <img
-                src={admissionPhoto}
-                alt="Illustration representing MyScholy"
-                className="rounded-lg shadow-lg w-full max-w-xs sm:max-w-md hover:scale-105 transition-all duration-300"
-              />
-            </div>
-          </div>
+      <section id="about" className="bg-gradient-to-b from-sky-100 to-white text-sky-900 py-12 md:py-16">
+  <div className="container mx-auto px-4 sm:px-6">
+    <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">About MyScholy</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      {/* Text on the left */}
+      <div className="md:order-1 text-base sm:text-lg text-center md:text-left md:pr-8">
+        <div className="border-l-4 border-sky-500 pl-4">
+          <p className="mb-6">
+            MyScholy is dedicated to providing students around the world with
+            access to quality education through scholarships, grants, and
+            mentorship programs.
+          </p>
+          <p className="mb-6">
+            Our mission is to empower the next generation of global leaders,
+            innovators, and change-makers by connecting them with the
+            resources they need to succeed.
+          </p>
         </div>
-      </section>
+      </div>
+      {/* Image on the right */}
+      <div className="flex justify-center md:justify-end">
+        <img
+          src={admissionPhoto}
+          alt="Illustration representing MyScholy"
+          className="rounded-lg shadow-lg w-full max-w-sm sm:max-w-lg hover:scale-105 transition-transform duration-300"
+        />
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Programs and Services Section */}
       <ProgramsNservices />

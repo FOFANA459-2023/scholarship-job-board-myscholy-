@@ -87,9 +87,7 @@ function Navbar() {
                 <Link to="/signup" className="text-white hover:text-blue-300">
                   Signup
                 </Link>
-                <Link to="/admin-login" className="text-white hover:text-blue-300">
-                  Admin
-                </Link>
+                
               </>
             )}
           </div>
@@ -157,12 +155,7 @@ function Navbar() {
                 >
                   Signup
                 </Link>
-                <Link
-                  to="/admin-login"
-                  className="block py-2 px-4 text-white hover:bg-blue-600"
-                >
-                  Admin
-                </Link>
+                
               </>
             )}
           </div>

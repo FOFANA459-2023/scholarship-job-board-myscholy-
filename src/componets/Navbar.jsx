@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "./supabaseClient";
+import Logo from "../assets/Logo.jpg"; // Ensure the path to your logo is correct
 
 const baseURL = import.meta.env.BASE_URL || "/scholarship-job-board-myscholy-/";
 
@@ -48,25 +49,32 @@ function Navbar() {
     <div className="bg-gradient-to-b from-blue-900 to-yellow-600 text-white">
       <nav className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg py-4">
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center">
-            <Link to="/" className="mr-12">
-              <div className="text-2xl font-bold text-white">MyScholy</div>
+          {/* Logo and MyScholy Text */}
+          <div className="flex items-center space-x-4">
+            <Link to="/" className="flex items-center">
+              <img
+                src={Logo}
+                alt="MyScholy Logo"
+                className="h-16 w-auto rounded-2xl" // Increased size and border radius
+              />
             </Link>
-            <div className="hidden md:flex space-x-6">
-              <Link to="/" className="text-white hover:text-blue-300">
-                Home
-              </Link>
-              <Link to="/scholarship-list" className="text-white hover:text-blue-300">
-                Scholarships
-              </Link>
-            </div>
+            <Link to="/" className="text-2xl font-bold text-white">
+              MyScholy
+            </Link>
           </div>
 
-          {/* Auth Buttons and Contact */}
-          <div className="hidden md:flex items-center space-x-6">
-            <Link to="/contact" className="text-white hover:text-blue-300">
-              Contact
+          {/* Centered Navigation Links */}
+          <div className="hidden md:flex space-x-6 flex-grow justify-center">
+            <Link to="/" className="text-white hover:text-blue-300">
+              Home
             </Link>
+            <Link to="/scholarship-list" className="text-white hover:text-blue-300">
+              Scholarships
+            </Link>
+          </div>
+
+          {/* Auth Buttons */}
+          <div className="hidden md:flex items-center space-x-6">
             {isLoading ? (
               // Show loading state while checking auth
               <div className="text-white">Loading...</div>
@@ -74,24 +82,30 @@ function Navbar() {
               // Show Logout if user is authenticated
               <button
                 onClick={handleLogout}
-                className="text-white hover:text-blue-300"
+                className="border border-white text-white py-1 px-3 rounded-lg hover:text-blue-300 hover:border-blue-300 transition-all"
               >
                 Logout
               </button>
             ) : (
               // Show Login/Signup if user is not authenticated
               <>
-                <Link to="/login" className="text-white hover:text-blue-300">
+                <Link
+                  to="/login"
+                  className="border border-white text-white py-1 px-3 rounded-lg hover:text-blue-300 hover:border-blue-300 transition-all"
+                >
                   Login
                 </Link>
-                <Link to="/signup" className="text-white hover:text-blue-300">
+                <Link
+                  to="/signup"
+                  className="border border-white text-white py-1 px-3 rounded-lg hover:text-blue-300 hover:border-blue-300 transition-all"
+                >
                   Signup
                 </Link>
-                
               </>
             )}
           </div>
 
+          {/* Mobile Menu Toggle Button */}
           <button
             className="md:hidden text-white focus:outline-none"
             onClick={toggleMobileMenu}
@@ -116,6 +130,7 @@ function Navbar() {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4">
+            {/* Navigation Links */}
             <Link to="/" className="block py-2 px-4 text-white hover:bg-blue-600">
               Home
             </Link>
@@ -126,9 +141,8 @@ function Navbar() {
               Scholarships
             </Link>
             <div className="border-t border-blue-800 my-2"></div>
-            <Link to="/contact" className="block py-2 px-4 text-white hover:bg-blue-600">
-              Contact
-            </Link>
+
+            {/* Auth Buttons */}
             {isLoading ? (
               // Show loading state while checking auth
               <div className="block py-2 px-4 text-white">Loading...</div>
@@ -155,7 +169,6 @@ function Navbar() {
                 >
                   Signup
                 </Link>
-                
               </>
             )}
           </div>

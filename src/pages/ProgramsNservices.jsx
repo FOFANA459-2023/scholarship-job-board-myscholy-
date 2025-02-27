@@ -5,7 +5,7 @@ function ProgramsNservices() {
   const navigate = useNavigate();
 
   const handleBookingClick = () => {
-    navigate("/booking");
+    navigate("/");
   };
 
   return (

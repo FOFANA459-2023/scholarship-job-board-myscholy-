@@ -13,8 +13,9 @@ import Contact from "./pages/Contact.jsx";
 import Signup from "./student/Signup.jsx";
 import Login from "./student/Login.jsx";
 import WhatsAppInvite from "./componets/WhatsAppInvite.jsx";
+import AdminNavbar from "./Admin/AdminNavbar.jsx";
 import AccessDenied from "./pages/AccessDenied.jsx";
-import ProtectedRoute from "./componets/ProtectedRoute.jsx";
+import SuperadminPanel from "./SuperAdmin/SuperadminPanel.jsx";
 
 function App() {
   return (
@@ -33,34 +34,14 @@ function App() {
         <Route path="/whatsapp-invite" element={<WhatsAppInvite />} />
         <Route path="/access-denied" element={<AccessDenied />} />
         <Route path="/admin-login" element={<AdminLogin />} />
-
-        {/* Protected Routes for Students */}
+        <Route path="/admin-navbar" element={<AdminNavbar />} />
+        <Route path="/post-scholarship" element={<PostScholarship />} />
         <Route
-          path="/student/*"
-          element={
-            <ProtectedRoute requiredRole={["student"]}>
-              <Routes>
-                <Route path="/whatsapp-invite" element={<WhatsAppInvite />} />
-                {/* Add more student-specific routes here */}
-              </Routes>
-            </ProtectedRoute>
-          }
+          path="/admin-scholarship-list"
+          element={<AdminScholarshipList />}
         />
-
-        {/* Protected Routes for Admins */}
-        <Route
-          path="/admin/*"
-          element={
-            <ProtectedRoute requiredRole={["admin"]}>
-              <Routes>
-                <Route path="/post-scholarship" element={<PostScholarship />} />
-                <Route path="/admin-scholarship-list" element={<AdminScholarshipList />} />
-                <Route path="/update-scholarship/:id" element={<UpdateScholarship />} />
-                {/* Add more admin-specific routes here */}
-              </Routes>
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/update-scholarship/:id" element={<UpdateScholarship />} />
+        <Route path="/super-admin-panel" element={<SuperadminPanel />} />
       </Routes>
       <Footer />
     </>

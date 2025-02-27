@@ -213,7 +213,7 @@ const Footer = () => {
 
           {/* Right Side - Contact Form */}
           <div className="w-full md:w-1/3">
-            <div className="bg-white text-blue-900 p-6 rounded-lg shadow-md">
+            <div className="bg-transparent p-6 rounded-lg shadow-md border border-white border-opacity-20 backdrop-filter backdrop-blur-sm">
               <h3 className="text-xl font-bold mb-4">Contact Us</h3>
               {submitSuccess && (
                 <div className="mb-4 p-4 bg-green-100 text-green-700 rounded">
@@ -233,7 +233,7 @@ const Footer = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    className="w-full px-4 py-2 bg-transparent border border-white border-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:border-white text-white placeholder-white placeholder-opacity-70 transition-all"
                     placeholder="Name"
                     required
                   />
@@ -248,7 +248,7 @@ const Footer = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    className="w-full px-4 py-2 bg-transparent border border-white border-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:border-white text-white placeholder-white placeholder-opacity-70 transition-all"
                     placeholder="Email"
                     required
                   />
@@ -263,7 +263,7 @@ const Footer = () => {
                     value={formData.message}
                     onChange={handleInputChange}
                     rows="3"
-                    className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    className="w-full px-4 py-2 bg-transparent border border-white border-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:border-white text-white placeholder-white placeholder-opacity-70 transition-all"
                     placeholder="Message"
                     required
                   />
@@ -274,7 +274,7 @@ const Footer = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-blue-600 to-red-600 text-white py-2 px-4 rounded-lg hover:from-blue-700 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all"
+                  className="w-full bg-gradient-to-r from-blue-600 to-yellow-600 text-white py-2 px-4 rounded-lg hover:from-blue-700 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 transition-all"
                 >
                   {isSubmitting ? "Submitting..." : "Submit"}
                 </button>

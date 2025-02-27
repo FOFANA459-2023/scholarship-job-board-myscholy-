@@ -1,31 +1,65 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "./supabaseClient";
-import Logo from "../assets/Logo.jpg"; // Ensure the path to your logo is correct
+import Logo from "../assets/Logo.jpg";
 
 const baseURL = import.meta.env.BASE_URL || "/scholarship-job-board-myscholy-/";
 
 function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [userRole, setUserRole] = useState(null); // Track user role
   const [isLoading, setIsLoading] = useState(true); // Track loading state
   const navigate = useNavigate();
 
+  // Fetch user role from the `users` table
+  const fetchUserRole = async (userId) => {
+    const { data: userData, error } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      console.error("Error fetching user role:", error.message);
+      return null;
+    }
+
+    return userData?.role; // Return the user's role
+  };
+
+  // Handle authentication state changes
   useEffect(() => {
-    // Check if user is logged in
     const checkUser = async () => {
-      setIsLoading(true); // Start loading
+      setIsLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
-      setIsLoading(false); // Stop loading
+
+      if (user) {
+        // Fetch the user's role as soon as they are authenticated
+        const role = await fetchUserRole(user.id);
+        setUserRole(role); // Set the user's role
+      }
+
+      setIsLoading(false);
     };
 
     checkUser();
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-      setIsLoading(false); // Stop loading after auth state change
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const user = session?.user || null;
+      setUser(user);
+
+      if (user) {
+        // Fetch the user's role immediately after login
+        const role = await fetchUserRole(user.id);
+        setUserRole(role); // Set the user's role
+      } else {
+        setUserRole(null); // Reset role on logout
+      }
+
+      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -37,6 +71,7 @@ function Navbar() {
       if (error) throw error;
 
       setUser(null);
+      setUserRole(null); // Reset role on logout
       navigate("/", { replace: true });
     } catch (error) {
       console.error("Error logging out:", error.message);
@@ -55,7 +90,7 @@ function Navbar() {
               <img
                 src={Logo}
                 alt="MyScholy Logo"
-                className="h-16 w-auto rounded-2xl" // Increased size and border radius
+                className="h-16 w-auto rounded-2xl"
               />
             </Link>
             <Link to="/" className="text-2xl font-bold text-white">
@@ -71,6 +106,23 @@ function Navbar() {
             <Link to="/scholarship-list" className="text-white hover:text-blue-300">
               Scholarships
             </Link>
+            {/* Show "Manage Scholarships" and "Upload Scholarship" for admins */}
+            {(userRole === "admin" || userRole === "superadmin") && (
+              <>
+                <Link to="/admin-scholarship-list" className="text-white hover:text-blue-300">
+                  Manage Scholarships
+                </Link>
+                <Link to="/post-scholarship" className="text-white hover:text-blue-300">
+                  Upload Scholarship
+                </Link>
+              </>
+            )}
+            {/* Show "User Management" for superadmins only */}
+            {userRole === "superadmin" && (
+              <Link to="/super-admin-panel" className="text-white hover:text-blue-300">
+                User Management
+              </Link>
+            )}
           </div>
 
           {/* Auth Buttons */}
@@ -140,6 +192,32 @@ function Navbar() {
             >
               Scholarships
             </Link>
+            {/* Show "Manage Scholarships" and "Upload Scholarship" for admins */}
+            {(userRole === "admin" || userRole === "superadmin") && (
+              <>
+                <Link
+                  to="/admin-scholarship-list"
+                  className="block py-2 px-4 text-white hover:bg-blue-600"
+                >
+                  Manage Scholarships
+                </Link>
+                <Link
+                  to="/post-scholarship"
+                  className="block py-2 px-4 text-white hover:bg-blue-600"
+                >
+                  Upload Scholarship
+                </Link>
+              </>
+            )}
+            {/* Show "User Management" for superadmins only */}
+            {userRole === "superadmin" && (
+              <Link
+                to="/super-admin-panel"
+                className="block py-2 px-4 text-white hover:bg-blue-600"
+              >
+                User Management
+              </Link>
+            )}
             <div className="border-t border-blue-800 my-2"></div>
 
             {/* Auth Buttons */}

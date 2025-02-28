@@ -100,27 +100,71 @@ function Navbar() {
 
           {/* Centered Navigation Links */}
           <div className="hidden md:flex space-x-6 flex-grow justify-center">
-            <Link to="/" className="text-white hover:text-blue-300">
+            <Link
+              to="/"
+              className="border border-blue-200 text-white px-4 py-2 rounded-lg hover:bg-blue-200 hover:bg-opacity-10 transition-all"
+            >
               Home
             </Link>
-            <Link to="/scholarship-list" className="text-white hover:text-blue-300">
+            <Link
+              to="/scholarship-list"
+              className="border border-blue-200 text-white px-4 py-2 rounded-lg hover:bg-blue-200 hover:bg-opacity-10 transition-all"
+            >
               Scholarships
             </Link>
             {/* Show "Manage Scholarships" and "Upload Scholarship" for admins */}
             {(userRole === "admin" || userRole === "superadmin") && (
               <>
-                <Link to="/admin-scholarship-list" className="text-white hover:text-blue-300">
-                  Manage Scholarships
+                <Link
+                  to="/admin-scholarship-list"
+                  className="flex items-center space-x-2 border border-blue-300 bg-blue-50 bg-opacity-10 text-white px-4 py-2 rounded-lg hover:bg-blue-100 hover:bg-opacity-20 transition-all"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                    <path
+                      fillRule="evenodd"
+                      d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span>Manage Scholarships</span>
                 </Link>
-                <Link to="/post-scholarship" className="text-white hover:text-blue-300">
-                  Upload Scholarship
+                <Link
+                  to="/post-scholarship"
+                  className="flex items-center space-x-2 border border-blue-300 bg-blue-50 bg-opacity-10 text-white px-4 py-2 rounded-lg hover:bg-blue-100 hover:bg-opacity-20 transition-all"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                  </svg>
+                  <span>Upload Scholarship</span>
                 </Link>
               </>
             )}
             {/* Show "User Management" for superadmins only */}
             {userRole === "superadmin" && (
-              <Link to="/super-admin-panel" className="text-white hover:text-blue-300">
-                User Management
+              <Link
+                to="/super-admin-panel"
+                className="flex items-center space-x-2 border border-yellow-300 bg-yellow-50 bg-opacity-10 text-white px-4 py-2 rounded-lg hover:bg-yellow-100 hover:bg-opacity-20 transition-all"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                </svg>
+                <span>User Management</span>
               </Link>
             )}
           </div>
@@ -183,7 +227,10 @@ function Navbar() {
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4">
             {/* Navigation Links */}
-            <Link to="/" className="block py-2 px-4 text-white hover:bg-blue-600">
+            <Link
+              to="/"
+              className="block py-2 px-4 text-white hover:bg-blue-600"
+            >
               Home
             </Link>
             <Link
@@ -197,13 +244,13 @@ function Navbar() {
               <>
                 <Link
                   to="/admin-scholarship-list"
-                  className="block py-2 px-4 text-white hover:bg-blue-600"
+                  className="block py-2 px-4 text-white bg-blue-50 bg-opacity-10 hover:bg-blue-600"
                 >
                   Manage Scholarships
                 </Link>
                 <Link
                   to="/post-scholarship"
-                  className="block py-2 px-4 text-white hover:bg-blue-600"
+                  className="block py-2 px-4 text-white bg-blue-50 bg-opacity-10 hover:bg-blue-600"
                 >
                   Upload Scholarship
                 </Link>
@@ -213,7 +260,7 @@ function Navbar() {
             {userRole === "superadmin" && (
               <Link
                 to="/super-admin-panel"
-                className="block py-2 px-4 text-white hover:bg-blue-600"
+                className="block py-2 px-4 text-white bg-yellow-50 bg-opacity-10 hover:bg-blue-600"
               >
                 User Management
               </Link>

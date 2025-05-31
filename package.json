@@ -1,8 +1,7 @@
 {
-  "name": "scholarship-job-board-myscholy-",
+  "name": "myscholy",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://FOFANA459-2023.github.io/scholarship-job-board-myscholy-",
   "type": "module",
   "scripts": {
     "dev": "vite",

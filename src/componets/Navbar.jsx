@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "./supabaseClient";
 import Logo from "../assets/Logo.jpg";
 
-const baseURL = import.meta.env.BASE_URL || "/scholarship-job-board-myscholy-/";
+const baseURL = import.meta.env.BASE_URL || "/";
 
 function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
